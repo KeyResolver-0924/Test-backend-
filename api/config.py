@@ -111,7 +111,7 @@ class Settings(BaseSettings):
     FRONTEND_URL: str
     
     # CORS Configuration
-    BACKEND_CORS_ORIGINS: Union[str, List[str]]
+    BACKEND_CORS_ORIGINS: str
     
     # Environment
     ENVIRONMENT: str = "development"

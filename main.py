@@ -59,7 +59,6 @@ async def lifespan(app: FastAPI):
     # Startup
     print("Starting up FastAPI application...")
     settings = get_settings()
-    print("kjhkjhkjhjk", settings.BACKEND_CORS_ORIGINS)
     print(f"Loaded settings - Supabase URL: {settings.SUPABASE_URL}")
     print(f"Supabase key type: {'service_role' if len(settings.SUPABASE_KEY) > 100 else 'anon'}")
     await SupabaseManager.get_client()  # Initialize the client
@@ -90,21 +89,28 @@ app = FastAPI(
 
 # Get settings for CORS configuration
 settings = get_settings()
-# Add CORS middleware BEFORE including routers!
+
+# Configure CORS
+origins = settings.BACKEND_CORS_ORIGINS
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://test-frontend-production-61e5.up.railway.app",
-        "http://localhost:3000"
-    ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
-# Now include routers
+# Include routers
 app.include_router(mortgage_deeds.router, prefix="/api/mortgage-deeds", tags=["mortgage-deeds"])
 app.include_router(housing_cooperative.router, prefix="/api/housing-cooperatives", tags=["housing-cooperatives"])
 app.include_router(signing.router, prefix="/api/mortgage-deeds", tags=["signing"])
 app.include_router(statistics.router, prefix="/api/statistics", tags=["statistics"])
-app.include_router(audit_logs.router, prefix="/api", tags=["audit-logs"])
+app.include_router(audit_logs.router, prefix="/api", tags=["audit-logs"]) 
+
+if __name__ == "__main__":
+    import uvicorn
+    import os
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
