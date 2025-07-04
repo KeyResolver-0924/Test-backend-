@@ -83,7 +83,7 @@ async def get_cooperative_by_org_number(
 
 # Create
 @router.post(
-    "/",
+    "",
     response_model=HousingCooperativeResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create a new housing cooperative",
@@ -151,7 +151,7 @@ async def create_housing_cooperative(
 
 # Read
 @router.get(
-    "/",
+    "",
     response_model=List[HousingCooperativeResponse],
     summary="List housing cooperatives",
     description="""
