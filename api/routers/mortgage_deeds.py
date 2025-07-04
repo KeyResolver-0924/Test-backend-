@@ -91,7 +91,7 @@ async def verify_deed_access(deed: dict, current_user: dict) -> None:
         )
 
 @router.post(
-    "/",
+    "",
     response_model=MortgageDeedResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create a new mortgage deed",
@@ -244,7 +244,7 @@ async def create_mortgage_deed(
     return MortgageDeedResponse(**complete_deed)
 
 @router.get(
-    "/",
+    "",
     response_model=List[MortgageDeedResponse],
     summary="List and filter mortgage deeds",
     description="""
