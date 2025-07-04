@@ -90,67 +90,21 @@ app = FastAPI(
 
 # Get settings for CORS configuration
 settings = get_settings()
-
+# Add CORS middleware BEFORE including routers!
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://test-frontend-production-61e5.up.railway.app","http://localhost:3000"],
+    allow_origins=[
+        "https://test-frontend-production-61e5.up.railway.app",
+        "http://localhost:3000"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"]
 )
 
-# # Add security headers middleware
-# @app.middleware("http")
-# async def add_security_headers(request: Request, call_next):
-#     response = await call_next(request)
-#     response.headers["X-Content-Type-Options"] = "nosniff"
-#     response.headers["X-Frame-Options"] = "DENY"
-#     response.headers["X-XSS-Protection"] = "1; mode=block"
-#     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-#     return response
-
-# # Error handler for authentication errors
-# @app.exception_handler(401)
-# async def unauthorized_handler(request: Request, exc):
-#     return JSONResponse(
-#         status_code=401,
-#         content={"detail": "Invalid authentication credentials"},
-#         headers={"WWW-Authenticate": "Bearer"}
-#     )
-
-# # Error handler for validation errors
-# @app.exception_handler(RequestValidationError)
-# async def validation_exception_handler(request: Request, exc: RequestValidationError):
-#     error_details = []
-#     for error in exc.errors():
-#         location = " -> ".join(str(loc) for loc in error["loc"])
-#         error_details.append({
-#             "location": location,
-#             "message": error["msg"],
-#             "type": error["type"]
-#         })
-    
-#     logger.error(
-#         "Validation error",
-#         extra={
-#             "path": request.url.path,
-#             "method": request.method,
-#             "errors": error_details
-#         }
-#     )
-    
-#     return JSONResponse(
-#         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-#         content={
-#             "detail": "Validation error",
-#             "errors": error_details
-#         }
-#     )
-
-# Include routers
+# Now include routers
 app.include_router(mortgage_deeds.router, prefix="/api/mortgage-deeds", tags=["mortgage-deeds"])
 app.include_router(housing_cooperative.router, prefix="/api/housing-cooperatives", tags=["housing-cooperatives"])
 app.include_router(signing.router, prefix="/api/mortgage-deeds", tags=["signing"])
 app.include_router(statistics.router, prefix="/api/statistics", tags=["statistics"])
-app.include_router(audit_logs.router, prefix="/api", tags=["audit-logs"]) 
+app.include_router(audit_logs.router, prefix="/api", tags=["audit-logs"])
